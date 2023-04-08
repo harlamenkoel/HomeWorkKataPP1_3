@@ -3,7 +3,10 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
+    @Override
     public void createUsersTable() {
 
         try (Connection connection = Util.getConnection()) {
@@ -28,6 +32,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
+    @Override
     public void dropUsersTable() {
         try (Connection connection = Util.getConnection()) {
             connection.prepareStatement("DROP TABLE IF EXISTS user").executeUpdate();
@@ -38,7 +43,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
-
+    @Override
     public void saveUser(String name, String lastName, byte age) {
 
         try (Connection connection = Util.getConnection()) {
@@ -55,6 +60,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Override
     public void removeUserById(long id) {
 
         try (Connection connection = Util.getConnection()) {
@@ -68,13 +74,13 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Override
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
 
         try (Connection connection = Util.getConnection()) {
-            Statement statement = connection.createStatement();
 
-            ResultSet resultSet = statement.executeQuery("SELECT id, name, lastName, age FROM user ");
+            ResultSet resultSet = connection.prepareStatement("SELECT id, name, lastName, age FROM user ").executeQuery();
 
             while (resultSet.next()) {
                 User user = new User();
@@ -92,7 +98,7 @@ public class UserDaoJDBCImpl implements UserDao {
         return userList;
     }
 
-
+    @Override
     public void cleanUsersTable() {
 
         try (Connection connection = Util.getConnection()) {
